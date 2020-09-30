@@ -1,20 +1,24 @@
 <?php
 class Auth extends CI_Controller
 {
+	public function __construct()
+	{
+		parent::__construct();
+	}
 
 	public function index()
 	{
-		if ($this->session->userdata('level')) {
-			redirect('admin');
+		if ($this->session->has_userdata('level')) {
+			return redirect('dashboard');
 		}
 
 		$this->form_validation->set_rules('username', 'Username', 'required|trim', ['required' => 'Username tidak boleh kosong!']);
 		$this->form_validation->set_rules('password', 'Password', 'required|trim', ['required' => 'Password tidak boleh kosong!']);
 
 		if ($this->form_validation->run() == false) {
-			$data['main_title'] = 'E-Arsip';
+			$data['main_title'] = 'Arsip Surat Master';
 			$data['title'] = 'Login';
-			$this->load->view('login', $data);
+			$this->load->view('index', $data);
 		} else {
 			$this->_login();
 		}
@@ -22,42 +26,30 @@ class Auth extends CI_Controller
 
 	private function _login()
 	{
-		$username = $this->input->post('username');
+		$username = htmlspecialchars($this->input->post('username'));
 		$password = $this->input->post('password');
 
 		$cek = $this->db->get_where('user', ['username' => $username])->row_array();
 
 		if ($cek) {
-			if (sha1($password) == $cek['password']) {
-				$userdata = [
-					'id_user' => $cek['id_user'],
-					'username' => $cek['username'],
-					'level' => $cek['level']
-				];
-
-				$this->session->set_flashdata('message', "<script>Swal.fire(
-						'Login berhasil!',
-						'You clicked the button!',
-						'success'
-						)</script>");
-				$this->session->set_userdata($userdata);
-				redirect('admin');
+			if (password_verify($password, $cek['password'])) {
+				$this->session->set_flashdata('success', "Login sukses");
+				$this->session->set_userdata($cek);
+				return redirect('dashboard');
 			} else {
-				$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password salah!</div>');
-				redirect('auth');
+				$this->session->set_flashdata('error', 'Password salah!');
+				return redirect('auth');
 			}
 		} else {
-			$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">User tidak terdaftar!</div>');
-			redirect('auth');
+			$this->session->set_flashdata('error', 'User tidak terdaftar!');
+			return redirect('auth');
 		}
 	}
 
 	public function logout()
 	{
-		$this->session->unset_userdata('id_user');
-		$this->session->unset_userdata('username');
-		$this->session->unset_userdata('level');
-		$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Logout sukses!</div>');
-		redirect('auth');
+		session_destroy();
+		$this->session->set_flashdata('success', 'Logout sukses!');
+		return redirect('auth');
 	}
 }
