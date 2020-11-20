@@ -8,7 +8,7 @@ class Users extends CI_Controller
         if (!$this->session->has_userdata('level')) {
             return redirect('auth');
         }
-        $this->load->model('modelusers');
+        $this->load->model('modelUsers');
     }
 
     private function _superadmin_only()
@@ -25,7 +25,7 @@ class Users extends CI_Controller
 
         $data['title'] = 'Users';
         $data['user'] = 'superadmin';
-        $data['users'] = $this->modelusers->get('user')->result();
+        $data['users'] = $this->modelUsers->get('user')->result();
 
         $this->load->view('templates/header', $data);
         $this->load->view('users/index', $data);
@@ -62,7 +62,7 @@ class Users extends CI_Controller
             'nama_lengkap' => $nama_lengkap,
             'level' => $level
         ];
-        $this->modelusers->insert($array);
+        $this->modelUsers->insert($array);
         $this->session->set_flashdata('success', 'User ditambahkan!');
         return redirect('users');
     }
@@ -134,7 +134,7 @@ class Users extends CI_Controller
             return redirect('users/profile');
         } else {
 
-            $user = $this->modelusers->get_by_id($this->session->id_user)->row();
+            $user = $this->modelUsers->get_by_id($this->session->id_user)->row();
 
             $array = [
                 'username' => $username,
@@ -206,7 +206,7 @@ class Users extends CI_Controller
             $this->session->set_flashdata('error',  validation_errors());
             return redirect('users/edit_password');
         } else {
-            $this->modelusers->update(['password' => password_hash($newpassword, PASSWORD_BCRYPT)], $this->session->id_user);
+            $this->modelUsers->update(['password' => password_hash($newpassword, PASSWORD_BCRYPT)], $this->session->id_user);
             session_destroy();
             $this->session->set_flashdata('success', 'Password diperbarui, harap login kembali!.');
             return redirect('/');

@@ -95,11 +95,9 @@
                                             <?php if ($user == 'superadmin') {
                                             ?>
                                                 <td>
-                                                    <a href="<?= base_url('suratmasuk/edit/' . $sm->id_suratmasuk) ?>"><span class="badge badge-primary d-block">edit</span></a>
-                                                    <br>
-                                                    <a href="<?= base_url('suratmasuk/disposisi/' . $sm->id_suratmasuk) ?>"><span class="badge badge-warning d-block">diposisi</span></a>
-                                                    <br>
-                                                    <a href="<?= base_url('suratmasuk/delete/' . $sm->id_suratmasuk) ?>" onclick="return confirm('Hapus data ini?')"><span class="badge badge-danger d-block">Hapus</span></a>
+                                                    <a href="<?= base_url('suratmasuk/edit/' . $sm->id_suratmasuk) ?>" class="badge badge-primary d-block mb-1">edit</a>
+                                                    <a href="<?= base_url('suratmasuk/disposisi/' . $sm->id_suratmasuk) ?>" class="badge badge-warning d-block mb-1">diposisi</a>
+                                                    <a href="<?= base_url('suratmasuk/delete/' . $sm->id_suratmasuk) ?>" onclick="return confirm('Hapus data ini?')" class="badge badge-danger d-block">Hapus</a>
                                                 </td>
                                             <?php }
                                             ?>
